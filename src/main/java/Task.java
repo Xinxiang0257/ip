@@ -29,6 +29,15 @@ public class Task {
     }
 
     /**
+     * Returns the task type icon.
+     *
+     * @return The task type icon as a string.
+     */
+    public String getType() {
+        return " "; // Default for base Task class
+    }
+
+    /**
      * Marks the task as done.
      */
     public void markAsDone() {
@@ -42,8 +51,21 @@ public class Task {
         this.isDone = false;
     }
 
+    /**
+     * Returns additional information about the task.
+     *
+     * @return Additional task information as a string.
+     */
+    public String getAdditionalInfo() {
+        return "";
+    }
+
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        String additionalInfo = getAdditionalInfo();
+        if (!additionalInfo.isEmpty()) {
+            return "[" + getType() + "][" + getStatusIcon() + "] " + description + " " + additionalInfo;
+        }
+        return "[" + getType() + "][" + getStatusIcon() + "] " + description;
     }
 }

@@ -1,3 +1,5 @@
+package duke;
+
 /**
  * Represents a task with a description and completion status.
  * Provides methods to mark tasks as done or not done, and to display
@@ -8,7 +10,7 @@ public class Task {
     protected boolean isDone;
 
     /**
-     * Constructs a new Task with the given description.
+     * Constructs a new duke.Task with the given description.
      * The task is initially marked as not done.
      *
      * @param description The description of the task.
@@ -43,7 +45,7 @@ public class Task {
      * @return The task type icon as a string.
      */
     public String getType() {
-        return " "; // Default for base Task class
+        return " "; // Default for base duke.Task class
     }
 
     /**

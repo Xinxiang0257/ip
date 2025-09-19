@@ -1,14 +1,16 @@
+package duke;
+
 import java.time.LocalDateTime;
 
 /**
  * Represents a deadline task that needs to be done before a specific date/time.
- * Inherits from the Task class.
+ * Inherits from the duke.Task class.
  */
 public class Deadline extends Task {
     protected LocalDateTime by;
 
     /**
-     * Constructs a new Deadline task with the given description and deadline.
+     * Constructs a new duke.Deadline task with the given description and deadline.
      *
      * @param description The description of the deadline task.
      * @param by          The deadline date/time as a string.

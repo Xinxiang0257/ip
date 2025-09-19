@@ -1,11 +1,13 @@
+package duke;
+
 /**
  * Represents a todo task without any date/time attached to it.
- * Inherits from the Task class.
+ * Inherits from the duke.Task class.
  */
 public class Todo extends Task {
 
     /**
-     * Constructs a new Todo task with the given description.
+     * Constructs a new duke.Todo task with the given description.
      *
      * @param description The description of the todo task.
      */

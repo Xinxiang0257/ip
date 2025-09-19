@@ -1,4 +1,4 @@
-# Cheesefood User Guide
+# duke.Cheesefood User Guide
 
 // Update the title above to match the actual product name
 

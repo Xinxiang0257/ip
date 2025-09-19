@@ -5,13 +5,14 @@ import java.util.Scanner;
 
 public class Parser {
     private String input;
-    public static Scanner scanner = new Scanner(System.in);
+    public static Scanner scanner;
     public Storage data;
     public static ArrayList<Task> tasks = new ArrayList<>();
 
-    public Parser(String userInput, Storage data) throws CheesefoodException {
+    public Parser(String userInput, Storage data, Scanner scanner) throws CheesefoodException {
         this.input = userInput;
         this.data = data;
+        this.scanner = scanner;
     }
 
     public void parse() throws CheesefoodException {
@@ -23,6 +24,7 @@ public class Parser {
             try {
                 if (this.input.equals("list")) {
                     listTasks();
+                } else if (this.input.startsWith("mark")) {
                     markTask(this.input);
                 } else if (this.input.startsWith("unmark")) {
                     unmarkTask(this.input);

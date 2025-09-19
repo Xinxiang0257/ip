@@ -77,4 +77,8 @@ public class Task {
         }
         return "[" + getType() + "][" + getStatusIcon() + "] " + description;
     }
+
+//    public String toString() {
+//        return " " + description;
+//    }
 }

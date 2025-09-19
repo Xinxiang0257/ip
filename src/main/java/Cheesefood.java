@@ -24,7 +24,7 @@ public class Cheesefood {
      *
      * @param args Command-line arguments (not used).
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CheesefoodException {
         System.out.println(horizontalLine);
         System.out.println(" Hello! I'm Cheesefood");
         System.out.println(" What can I do for you?");
@@ -78,7 +78,7 @@ public class Cheesefood {
      * Loads tasks from the file when the application starts.
      * Creates the file and directory if they don't exist.
      */
-    private static void loadTasksFromFile() {
+    private static void loadTasksFromFile() throws CheesefoodException {
 
         try {
             File file = new File(DATA_FILE_PATH);
@@ -110,7 +110,7 @@ public class Cheesefood {
         }
     }
 
-    private static Task createTask(String[] taskLine) {
+    private static Task createTask(String[] taskLine) throws CheesefoodException {
 
         String type = taskLine[0].trim();
         boolean isDone = taskLine[1].trim().equals("1"); // change the name to isMarked
@@ -125,14 +125,22 @@ public class Cheesefood {
             case "D":
                 if (taskLine.length >= 4) {
                     String by = taskLine[3].trim();
-                    task = new Deadline(description, by);
+                    try {
+                        task = new Deadline(description, by);
+                    } catch (CheesefoodException e) {
+                        System.out.println("Error parsing event dates: " + e.getMessage());
+                    }
                 }
                 break;
             case "E":
                 if (taskLine.length >= 5) {
                     String from = taskLine[3].trim();
                     String to = taskLine[4].trim();
-                    task = new Event(description, from, to);
+                    try {
+                        task = new Event(description, from, to);
+                    } catch (CheesefoodException e) {
+                        System.out.println("Error parsing event dates: " + e.getMessage());
+                    }
                 }
                 break;
         }

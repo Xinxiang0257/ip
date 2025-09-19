@@ -24,6 +24,15 @@ public class Task {
      *
      * @return The status icon as a string.
      */
+
+    public boolean isDone() {
+        return this.isDone;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
     public String getStatusIcon() {
         return (isDone ? "X" : " ");
     }

@@ -30,7 +30,7 @@ public class Cheesefood {
         String userInput;
         userInput = scanner.nextLine();
 
-        Parser inputParser = new Parser(userInput, data);
+        Parser inputParser = new Parser(userInput, data, scanner);
         inputParser.parse();
 
     }

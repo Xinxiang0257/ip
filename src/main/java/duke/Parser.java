@@ -153,6 +153,11 @@ public class Parser {
 
         int initialSize = tasks.size();
         Todo newTodo = new Todo(description);
+
+        if (isDuplicate(newTodo)) {
+            return "Rejected: Task already exists";
+        }
+
         tasks.add(newTodo);
         assert tasks.size() == initialSize + 1 : "Task list size should increase by 1 after adding todo";
         assert tasks.contains(newTodo) : "Newly added todo should be in the task list";
@@ -195,6 +200,10 @@ public class Parser {
 
         int initialSize = tasks.size();
         Deadline newDeadline = new Deadline(description, by);
+
+        if (isDuplicate(newDeadline)) {
+            return "Rejected: Task already exists";
+        }
         tasks.add(newDeadline);
         assert tasks.size() == initialSize + 1 : "Task list size should increase by 1 after adding deadline";
 
@@ -241,6 +250,9 @@ public class Parser {
 
         int initialSize = tasks.size();
         Event newEvent = new Event(description, from, to);
+        if (isDuplicate(newEvent)) {
+            return "Rejected: Task already exists";
+        }
         tasks.add(newEvent);
         assert tasks.size() == initialSize + 1 : "Task list size should increase by 1 after adding event";
 
@@ -281,4 +293,16 @@ public class Parser {
             throw new CheesefoodException("Invalid find command format. Use: find [keyword]");
         }
     }
+
+    private static boolean isDuplicate(Task newTask) {
+
+        for (Task task : tasks) {
+            if (task.equals(newTask)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
+

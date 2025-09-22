@@ -25,21 +25,33 @@ public class Event extends Task {
     }
 
     public String getFrom() {
+
         return DateTimeParser.formatForDisplay(from);
     }
 
     public String getTo() {
+
         return DateTimeParser.formatForDisplay(to);
     }
 
     @Override
     public String getType() {
+
         return "E";
     }
 
     @Override
     public String getAdditionalInfo() {
+
         return "(from: " + from + " to: " + to + ")";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) return false;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Event other = (Event) obj;
+        return this.from.equals(other.from) && this.to.equals(other.to);
     }
 
 }

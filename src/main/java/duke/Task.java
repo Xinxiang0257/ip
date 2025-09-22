@@ -68,6 +68,7 @@ public class Task {
      * @return Additional task information as a string.
      */
     public String getAdditionalInfo() {
+
         return "";
     }
 
@@ -80,7 +81,11 @@ public class Task {
         return "[" + getType() + "][" + getStatusIcon() + "] " + description;
     }
 
-//    public String toString() {
-//        return " " + description;
-//    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Task other = (Task) obj;
+        return this.description.equalsIgnoreCase(other.description);
+    }
 }

@@ -19,4 +19,11 @@ public class Todo extends Task {
     public String getType() {
         return "T";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) return false;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        return true; // Todos only need description comparison
+    }
 }

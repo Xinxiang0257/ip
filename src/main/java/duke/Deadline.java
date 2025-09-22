@@ -21,6 +21,7 @@ public class Deadline extends Task {
     }
 
     public String getBy() {
+
         return DateTimeParser.formatForDisplay(this.by);
     }
 
@@ -34,6 +35,14 @@ public class Deadline extends Task {
     public String getAdditionalInfo() {
 
         return "(by: " + by + ")";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) return false;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Deadline other = (Deadline) obj;
+        return this.by.equals(other.by); // Also compare due dates
     }
 }
 

@@ -67,3 +67,4 @@ public class ParserTest {
         assertTrue(result.contains("Please provide a number between 1 and 1"));
     }
 }
+

@@ -2,6 +2,7 @@ package duke;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 
 /**
@@ -18,31 +19,30 @@ public class DateTimeParser {
      * - dd/mm/yyyy HHmm
      * - and other common formats
      */
-    public static LocalDateTime parse(String dateTimeStr) throws CheesefoodException {
+    public static LocalDateTime parse(String dateTimeString) throws CheesefoodException {
         try {
-            if (dateTimeStr.matches("\\d{4}-\\d{1,2}-\\d{1,2}")) { // eg. "2025-01-01"
-                return LocalDateTime.parse(dateTimeStr + "T00:00:00");
-            } else if (dateTimeStr.matches("\\d{4}-\\d{1,2}-\\d{1,2} \\d{4}")) { // eg. "2025-01-01 2359"
-                String[] parts = dateTimeStr.split(" ");
-                return LocalDateTime.parse(parts[0] + "T" +
-                        parts[1].substring(0, 2) + ":" + parts[1].substring(2, 4) + ":00");
-            } else if (dateTimeStr.matches("\\d{1,2}/\\d{1,2}/\\d{4} \\d{4}")) { // eg. 01/01/2025 2359
-                String[] parts = dateTimeStr.split(" ");
-                String[] dateParts = parts[0].split("/");
-                String formattedDate = String.format("%s-%02d-%02d",
-                        dateParts[2], Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[0]));
-                return LocalDateTime.parse(formattedDate + "T" +
-                        parts[1].substring(0, 2) + ":" + parts[1].substring(2, 4) + ":00");
-            } else if (dateTimeStr.matches("\\d{1,2}/\\d{1,2}/\\d{4}")) { //// eg. "01/01/2025"
-                String[] dateParts = dateTimeStr.split("/");
-                String formattedDate = String.format("%s-%02d-%02d",
-                        dateParts[2], Integer.parseInt(dateParts[1]), Integer.parseInt(dateParts[0]));
-                return LocalDateTime.parse(formattedDate + "T00:00:00");
-            } else {
-                throw new CheesefoodException("Invalid date format. Use yyyy-mm-dd or dd/mm/yyyy [HHmm]");
+            // Try parsing with time first
+            DateTimeFormatter formatterWithTime = new DateTimeFormatterBuilder()
+                    .parseCaseInsensitive()
+                    .append(DateTimeFormatter.ofPattern("yyyy-M-d[ HHmm][ HH:mm]"))
+                    .toFormatter();
+
+
+            DateTimeFormatter formatterWithoutTime = new DateTimeFormatterBuilder()
+                    .parseCaseInsensitive()
+                    .append(DateTimeFormatter.ofPattern("yyyy-M-d"))
+                    .toFormatter();
+
+            try {
+                return LocalDateTime.parse(dateTimeString, formatterWithTime);
+            } catch (DateTimeParseException e1) {
+                LocalDateTime dateOnly = LocalDateTime.parse(dateTimeString + " 0000", formatterWithTime);
+                return dateOnly.withHour(0).withMinute(0);
             }
+
         } catch (DateTimeParseException e) {
-            throw new CheesefoodException("Invalid date format. Use yyyy-mm-dd or dd/mm/yyyy [HHmm]");
+            throw new CheesefoodException("Invalid date format: " + dateTimeString +
+                    ". Supported formats: 2024-1-1, 2024-01-01, 2024-01-01 2359, 2024/1/1 23:59.");
         }
     }
 
@@ -54,3 +54,7 @@ public class DateTimeParser {
         return dateTime.format(formatter);
     }
 }
+
+
+
+

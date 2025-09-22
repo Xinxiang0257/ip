@@ -27,12 +27,26 @@ public class MainWindow extends AnchorPane {
 
     @FXML
     public void initialize() {
+
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+
     }
 
     /** Injects the Duke instance */
     public void setCheesefood(Cheesefood d) {
+
         cheesefood = d;
+
+        showWelcomeMessage();
+    }
+
+    /** Shows the welcome message from Cheesefood */
+    private void showWelcomeMessage() {
+        if (cheesefood != null) {
+            dialogContainer.getChildren().addAll(
+                    DialogBox.getDukeDialog(Ui.showWelcome(), cheesefoodImage)
+            );
+        }
     }
 
     /**
@@ -40,7 +54,7 @@ public class MainWindow extends AnchorPane {
      * the dialog container. Clears the user input after processing.
      */
     @FXML
-    private void handleUserInput() {
+    private void handleUserInput() throws CheesefoodException {
         String input = userInput.getText();
         String response = cheesefood.getResponse(input);
         dialogContainer.getChildren().addAll(

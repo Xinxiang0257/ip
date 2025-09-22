@@ -14,61 +14,56 @@ public class Parser {
         this.data = data;
         this.scanner = scanner;
     }
+    public String parse() throws CheesefoodException {
+        String output = "";
 
-    public void parse() throws CheesefoodException {
-
-        data.loadTasksFromFile(tasks);
-
-        System.out.println(Ui.HORIZONTAL_LINE);
-        while (!this.input.equals("bye")){
-            try {
-                if (this.input.equals("list")) {
-                    listTasks();
-                } else if (this.input.startsWith("mark")) {
-                    markTask(this.input);
-                } else if (this.input.startsWith("unmark")) {
-                    unmarkTask(this.input);
-                } else if (this.input.startsWith("todo")) {
-                    addTodo(this.input);
-                } else if (this.input.startsWith("deadline")) {
-                    addDeadline(this.input);
-                } else if (this.input.startsWith("event")){
-                    addEvent(this.input);
-                } else if (this.input.startsWith("delete")) {
-                    deleteTask(this.input);
-                } else {
-                    throw new CheesefoodException("Invalid instruction");
-                }
-            } catch (CheesefoodException e) {
-                System.out.println(" Error: " + e.getMessage());
+        try {
+            if (this.input.equals("list")) {
+                output = listTasks();
+            } else if (this.input.startsWith("mark")) {
+                output = markTask(this.input);
+            } else if (this.input.startsWith("unmark")) {
+                output = unmarkTask(this.input);
+            } else if (this.input.startsWith("todo")) {
+                output = addTodo(this.input);
+            } else if (this.input.startsWith("deadline")) {
+                output = addDeadline(this.input);
+            } else if (this.input.startsWith("event")) {
+                output = addEvent(this.input);
+            } else if (this.input.startsWith("delete")) {
+                output = deleteTask(this.input);
+            } else if (this.input.equals("bye")) {
+                output = Ui.showGoodbye();
+            } else {
+                throw new CheesefoodException("Invalid instruction");
             }
-
-            data.saveTasksToFile(tasks);
-
-            System.out.println(Ui.HORIZONTAL_LINE);
-            this.input = scanner.nextLine();
+        } catch (CheesefoodException e) {
+            output = "Error: " + e.getMessage();
         }
-        Ui.showGoodbye();
+
+        data.saveTasksToFile(tasks);
+        return output;
     }
 
-    private static void listTasks() {
+
+    private static String listTasks() {
         if (tasks.isEmpty()) {
-            System.out.println(" Your task list is empty");
+            return " Your task list is empty";
         } else {
-            System.out.println(" Here are your tasks:");
+            StringBuilder result = new StringBuilder(" Here are your tasks:");
             for (int i = 0; i < tasks.size(); i++) {
-                System.out.println(" " + (i + 1) + "." + tasks.get(i));
+                result.append("\n ").append(i + 1).append(".").append(tasks.get(i));
             }
+            return result.toString();
         }
     }
 
-    private static void markTask(String command) throws CheesefoodException {
+    private static String markTask(String command) throws CheesefoodException {
         try {
             int taskNumber = Integer.parseInt(command.substring(5).trim()) - 1;
             if (taskNumber >= 0 && taskNumber < tasks.size()) {
                 tasks.get(taskNumber).markAsDone();
-                System.out.println(" Marked as done:");
-                System.out.println("   " + tasks.get(taskNumber));
+                return " Marked as done:\n   " + tasks.get(taskNumber);
             } else {
                 throw new CheesefoodException("Insufficient information");
             }
@@ -77,13 +72,12 @@ public class Parser {
         }
     }
 
-    private static void unmarkTask(String command) throws CheesefoodException {
+    private static String unmarkTask(String command) throws CheesefoodException {
         try {
             int taskNumber = Integer.parseInt(command.substring(7).trim()) - 1;
             if (taskNumber >= 0 && taskNumber < tasks.size()) {
                 tasks.get(taskNumber).markAsNotDone();
-                System.out.println(" Marked as not done:");
-                System.out.println("   " + tasks.get(taskNumber));
+                return " Marked as not done:\n   " + tasks.get(taskNumber);
             } else {
                 throw new CheesefoodException("Insufficient information");
             }
@@ -92,15 +86,13 @@ public class Parser {
         }
     }
 
-    private static void deleteTask(String command) throws CheesefoodException {
+    private static String deleteTask(String command) throws CheesefoodException {
         try {
             int taskNumber = Integer.parseInt(command.substring(7).trim()) - 1;
             if (taskNumber >= 0 && taskNumber < tasks.size()) {
                 Task removedTask = tasks.get(taskNumber);
                 tasks.remove(taskNumber);
-                System.out.println(" Noted. I've removed this task:");
-                System.out.println("   " + removedTask);
-                System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+                return " Noted. I've removed this task:\n   " + removedTask + "\n Now you have " + tasks.size() + " tasks in the list.";
             } else {
                 throw new CheesefoodException("Insufficient information");
             }
@@ -109,7 +101,7 @@ public class Parser {
         }
     }
 
-    private static void addTodo(String command) throws CheesefoodException {
+    private static String addTodo(String command) throws CheesefoodException {
         String description = command.substring(5).trim();
 
         if (description.isEmpty()) {
@@ -118,12 +110,10 @@ public class Parser {
 
         Todo newTodo = new Todo(description);
         tasks.add(newTodo);
-        System.out.println(" Added todo:");
-        System.out.println("   " + newTodo);
-        System.out.println(" Total tasks: " + tasks.size());
+        return " Added todo:\n   " + newTodo + "\n Total tasks: " + tasks.size();
     }
 
-    private static void addDeadline(String command) throws CheesefoodException {
+    private static String addDeadline(String command) throws CheesefoodException {
         try {
             String remaining = command.substring(9).trim();
             String[] parts = remaining.split(" /by ", 2);
@@ -141,15 +131,13 @@ public class Parser {
 
             Deadline newDeadline = new Deadline(description, by);
             tasks.add(newDeadline);
-            System.out.println(" Added deadline:");
-            System.out.println("   " + newDeadline);
-            System.out.println(" Total tasks: " + tasks.size());
+            return " Added deadline:\n   " + newDeadline + "\n Total tasks: " + tasks.size();
         } catch (Exception e) {
             throw new CheesefoodException("Insufficient information");
         }
     }
 
-    private static void addEvent(String command) throws CheesefoodException {
+    private static String addEvent(String command) throws CheesefoodException {
         try {
             String remaining = command.substring(6).trim();
             String[] parts = remaining.split(" /from ", 2);
@@ -175,12 +163,9 @@ public class Parser {
 
             Event newEvent = new Event(description, from, to);
             tasks.add(newEvent);
-            System.out.println(" Added event:");
-            System.out.println("   " + newEvent);
-            System.out.println(" Total tasks: " + tasks.size());
+            return " Added event:\n   " + newEvent + "\n Total tasks: " + tasks.size();
         } catch (Exception e) {
             throw new CheesefoodException("Insufficient information");
         }
     }
-
 }

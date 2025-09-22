@@ -27,19 +27,37 @@ public class Cheesefood {
 
         Storage data = new Storage(DATA_FILE_PATH);
 
-        String userInput;
-        userInput = scanner.nextLine();
+        data.loadTasksFromFile(Parser.tasks);
 
-        Parser inputParser = new Parser(userInput, data, scanner);
-        inputParser.parse();
+
+//        String userInput = scanner.nextLine();
+//
+//        Parser inputParser = new Parser(userInput, data, scanner);
+//
+//        inputParser.parse();
 
     }
+
+//    /**
+//     * Generates a response for the user's chat message.
+//     */
+//    public String getResponse(String input) throws CheesefoodException {
+//
+//        Parser inputParser = new Parser(input, data, scanner);
+//        return inputParser.parse();
+//
+//    }
 
     /**
      * Generates a response for the user's chat message.
      */
     public String getResponse(String input) {
-        return "Cheesefood heard: " + input;
+        try {
+            Parser inputParser = new Parser(input, data, null); // Pass null for scanner
+            return inputParser.parse();
+        } catch (CheesefoodException e) {
+            return "Error: " + e.getMessage();
+        }
     }
 
 }

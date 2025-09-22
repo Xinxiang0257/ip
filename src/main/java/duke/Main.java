@@ -17,6 +17,7 @@ public class Main extends Application {
 
     private Cheesefood cheesefood = new Cheesefood();
 
+
     @Override
     public void start(Stage stage) {
         try {
@@ -30,4 +31,5 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
+
 }

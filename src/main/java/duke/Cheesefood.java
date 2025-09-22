@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class Cheesefood {
     public static String horizontalLine = "____________________________________________________________";
     public static Scanner scanner = new Scanner(System.in);
-    //    public static ArrayList<duke.Task> tasks = new ArrayList<>();
     public static String currentDir = System.getProperty("user.dir");
     public static String DATA_FILE_PATH = currentDir + "/data.txt";
     public static Storage data = new Storage(DATA_FILE_PATH);
@@ -23,30 +22,13 @@ public class Cheesefood {
      */
     public static void main(String[] args) throws CheesefoodException {
 
-        Ui.showWelcome();
-
         Storage data = new Storage(DATA_FILE_PATH);
 
         data.loadTasksFromFile(Parser.tasks);
 
-
-//        String userInput = scanner.nextLine();
-//
-//        Parser inputParser = new Parser(userInput, data, scanner);
-//
-//        inputParser.parse();
-
+        // many tasks are passed to the getResponse method and the Parser class
     }
 
-//    /**
-//     * Generates a response for the user's chat message.
-//     */
-//    public String getResponse(String input) throws CheesefoodException {
-//
-//        Parser inputParser = new Parser(input, data, scanner);
-//        return inputParser.parse();
-//
-//    }
 
     /**
      * Generates a response for the user's chat message.

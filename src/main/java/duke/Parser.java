@@ -66,15 +66,23 @@ public class Parser {
         assert command != null : "Command cannot be null";
         assert command.startsWith("mark") : "Method should only be called with mark commands";
 
-        int taskNumber = Integer.parseInt(command.substring(5).trim()) - 1;
-        if (taskNumber >= 0 && taskNumber < tasks.size()) {
-            Task task = tasks.get(taskNumber);
-            assert task != null : "Retrieved task should not be null";
+        if (command.substring(4).trim().isEmpty()) {
+            throw new CheesefoodException("Please specify a task number. Usage: mark [task number]");
+        }
 
-            task.markAsDone();
-            return " Marked as done:\n   " + task;
-        } else {
-            throw new CheesefoodException("Insufficient information");
+        try {
+            int taskNumber = Integer.parseInt(command.substring(5).trim()) - 1;
+            if (taskNumber >= 0 && taskNumber < tasks.size()) {
+                Task task = tasks.get(taskNumber);
+                assert task != null : "Retrieved task should not be null";
+
+                task.markAsDone();
+                return " Marked as done:\n   " + task;
+            } else {
+                throw new CheesefoodException("Invalid task number. Please provide a number between 1 and " + tasks.size());
+            }
+        } catch (NumberFormatException e) {
+            throw new CheesefoodException("Please provide a valid task number. Usage: mark [task number]");
         }
     }
 
@@ -82,15 +90,23 @@ public class Parser {
         assert command != null : "Command cannot be null";
         assert command.startsWith("unmark") : "Method should only be called with unmark commands";
 
-        int taskNumber = Integer.parseInt(command.substring(7).trim()) - 1;
-        if (taskNumber >= 0 && taskNumber < tasks.size()) {
-            Task task = tasks.get(taskNumber);
-            assert task != null : "Retrieved task should not be null";
+        if (command.substring(6).trim().isEmpty()) {
+            throw new CheesefoodException("Please specify a task number. Usage: unmark [task number]");
+        }
 
-            task.markAsNotDone();
-            return " Marked as not done:\n   " + task;
-        } else {
-            throw new CheesefoodException("Insufficient information");
+        try {
+            int taskNumber = Integer.parseInt(command.substring(7).trim()) - 1;
+            if (taskNumber >= 0 && taskNumber < tasks.size()) {
+                Task task = tasks.get(taskNumber);
+                assert task != null : "Retrieved task should not be null";
+
+                task.markAsNotDone();
+                return " Marked as not done:\n   " + task;
+            } else {
+                throw new CheesefoodException("Invalid task number. Please provide a number between 1 and " + tasks.size());
+            }
+        } catch (NumberFormatException e) {
+            throw new CheesefoodException("Please provide a valid task number. Usage: unmark [task number]");
         }
     }
 
@@ -98,18 +114,26 @@ public class Parser {
         assert command != null : "Command cannot be null";
         assert command.startsWith("delete") : "Method should only be called with delete commands";
 
-        int taskNumber = Integer.parseInt(command.substring(7).trim()) - 1;
-        if (taskNumber >= 0 && taskNumber < tasks.size()) {
-            int initialSize = tasks.size();
-            Task removedTask = tasks.get(taskNumber);
-            assert removedTask != null : "Task to remove should not be null";
+        if (command.substring(6).trim().isEmpty()) {
+            throw new CheesefoodException("Please specify a task number. Usage: delete [task number]");
+        }
 
-            tasks.remove(taskNumber);
-            assert tasks.size() == initialSize - 1 : "Task list size should decrease by 1 after deletion";
+        try {
+            int taskNumber = Integer.parseInt(command.substring(7).trim()) - 1;
+            if (taskNumber >= 0 && taskNumber < tasks.size()) {
+                int initialSize = tasks.size();
+                Task removedTask = tasks.get(taskNumber);
+                assert removedTask != null : "Task to remove should not be null";
 
-            return " Noted. I've removed this task:\n   " + removedTask + "\n Now you have " + tasks.size() + " tasks in the list.";
-        } else {
-            throw new CheesefoodException("Insufficient information");
+                tasks.remove(taskNumber);
+                assert tasks.size() == initialSize - 1 : "Task list size should decrease by 1 after deletion";
+
+                return " Noted. I've removed this task:\n   " + removedTask + "\n Now you have " + tasks.size() + " tasks in the list.";
+            } else {
+                throw new CheesefoodException("Invalid task number. Please provide a number between 1 and " + tasks.size());
+            }
+        } catch (NumberFormatException e) {
+            throw new CheesefoodException("Please provide a valid task number. Usage: delete [task number]");
         }
     }
 
@@ -117,10 +141,14 @@ public class Parser {
         assert command != null : "Command cannot be null";
         assert command.startsWith("todo") : "Method should only be called with todo commands";
 
+        if (command.length() <= 4) {
+            throw new CheesefoodException("Todo description cannot be empty. Usage: todo [description]");
+        }
+
         String description = command.substring(5).trim();
 
         if (description.isEmpty()) {
-            throw new CheesefoodException("Insufficient information");
+            throw new CheesefoodException("Todo description cannot be empty. Usage: todo [description]");
         }
 
         int initialSize = tasks.size();
@@ -137,18 +165,33 @@ public class Parser {
         assert command.startsWith("deadline") : "Method should only be called with deadline commands";
 
         String remaining = command.substring(9).trim();
+
+        if (remaining.isEmpty()) {
+            throw new CheesefoodException("Please provide both description and due date. Usage: deadline [description] /by [YYYY-MM-DD]");
+        }
+
         String[] parts = remaining.split(" /by ", 2);
 
         if (parts.length < 2) {
-            if (parts[0].isEmpty()) {
-                throw new CheesefoodException("Lack of task description. Please use the format deadline [description] /by [YYYY-MM-DD]");
+            String descriptionPart = parts[0].trim();
+            if (descriptionPart.isEmpty()) {
+                throw new CheesefoodException("Deadline description cannot be empty. Usage: deadline [description] /by [YYYY-MM-DD]");
+            } else if (!remaining.contains("/by")) {
+                throw new CheesefoodException("Missing '/by' keyword. Usage: deadline [description] /by [YYYY-MM-DD]");
             } else {
-                throw new CheesefoodException("Lack of due date. Please use the format deadline [description] /by [YYYY-MM-DD]");
+                throw new CheesefoodException("Missing due date. Usage: deadline [description] /by [YYYY-MM-DD]");
             }
         }
 
         String description = parts[0].trim();
         String by = parts[1].trim();
+
+        if (description.isEmpty()) {
+            throw new CheesefoodException("Deadline description cannot be empty. Usage: deadline [description] /by [YYYY-MM-DD]");
+        }
+        if (by.isEmpty()) {
+            throw new CheesefoodException("Due date cannot be empty. Usage: deadline [description] /by [YYYY-MM-DD]");
+        }
 
         int initialSize = tasks.size();
         Deadline newDeadline = new Deadline(description, by);
@@ -163,10 +206,22 @@ public class Parser {
         assert command.startsWith("event") : "Method should only be called with event commands";
 
         String remaining = command.substring(6).trim();
+
+        if (remaining.isEmpty()) {
+            throw new CheesefoodException("Please provide description, start time, and end time. Usage: event [description] /from [start] /to [end]");
+        }
+
         String[] parts = remaining.split(" /from ", 2);
 
         if (parts.length < 2) {
-            throw new CheesefoodException("Insufficient information");
+            String descriptionPart = parts[0].trim();
+            if (descriptionPart.isEmpty()) {
+                throw new CheesefoodException("Event description cannot be empty. Usage: event [description] /from [start] /to [end]");
+            } else if (!remaining.contains("/from")) {
+                throw new CheesefoodException("Missing '/from' keyword. Usage: event [description] /from [start] /to [end]");
+            } else {
+                throw new CheesefoodException("Missing start time. Usage: event [description] /from [start] /to [end]");
+            }
         }
 
         String description = parts[0].trim();
@@ -174,15 +229,15 @@ public class Parser {
         String[] timeParts = remainingTime.split(" /to ", 2);
 
         if (timeParts.length < 2) {
-            throw new CheesefoodException("Insufficient information");
+            if (!remainingTime.contains("/to")) {
+                throw new CheesefoodException("Missing '/to' keyword. Usage: event [description] /from [start] /to [end]");
+            } else {
+                throw new CheesefoodException("Missing end time. Usage: event [description] /from [start] /to [end]");
+            }
         }
 
         String from = timeParts[0].trim();
         String to = timeParts[1].trim();
-
-        if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
-            throw new CheesefoodException("Insufficient information");
-        }
 
         int initialSize = tasks.size();
         Event newEvent = new Event(description, from, to);
